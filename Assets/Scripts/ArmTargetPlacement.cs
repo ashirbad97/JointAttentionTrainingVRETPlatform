@@ -20,10 +20,11 @@ public class ArmTargetPlacement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Subscription of ExperimentController Events with the respective functions
+        ExperimentController.OnObjectTrackedInLeftDir += PlaceTargetHandToLeft;
+        ExperimentController.OnObjectTrackedInRightDir += PlaceTargetHandToRight;
         oneHandDist = 0.7f;
         startPoint = transform.position;
-        EventManagement.OnObjectTrackedInLeftDir += PlaceTargetHandToLeft;
-        EventManagement.OnObjectTrackedInRightDir += PlaceTargetHandToRight;
     }
 
     // Update is called once per frame
