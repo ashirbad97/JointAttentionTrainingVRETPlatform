@@ -15,28 +15,29 @@ public class ExperimentController : MonoBehaviour
     [SerializeField] private float subjectResponseWaitTime;
     [SerializeField] private float faceFixationWaitTime;
     [SerializeField] private GameObject avatarHeadRegion;
-    //Declaring Events for Arm Animation of the Avatar
-    public static event Action OnObjectTrackedInRightDir;
-    public static event Action OnObjectTrackedInLeftDir;
-    public bool waitForEyeContact = true;
-    public bool waitForResponse = false;
-    string currentGazedObject;
-    string prevGazedObject;
+    [SerializeField] bool isCueHierarchy; //N.B: Take Value from Settings
+    [SerializeField] bool isKeepPointing;//N.B: Take Value from Settings
+    //View the current countdown
     [SerializeField] float avatarFaceGazeCountdownTimer;
     [SerializeField] float targetObjRegisterCountdownTimer;
-    string endPointDirection;
-    void Awake()
-    {
+    //Declaring Events for Arm Animation of the Avatar
+    public static event Action<float,string> OnObjectTrackedInRightDir;
+    public static event Action<float,string> OnObjectTrackedInLeftDir;
 
-    }
+
+    public bool waitForEyeContact = true;
+    public static bool waitForResponse = false;
+    string currentGazedObject;
+    string prevGazedObject;
+    string endPointDirection;
     // Start is called before the first frame update
     void Start()
     {
         Debug.Log("Current Trial is: " + ExperimentSettings.currentTrialCount);
         //Assigning parameter variables with settings values from Input Menu
-        timeToMoveHeadTarget = ExperimentSettings.cueDeliverySpeed;
+        timeToMoveHeadTarget = ExperimentSettings.cueDeliveryDuration;
         subjectResponseWaitTime = ExperimentSettings.responseRegistrationFixationDuration;
-        faceFixationWaitTime = ExperimentSettings.faceFixationTime;
+        faceFixationWaitTime = ExperimentSettings.faceFixationDuration;
         // Setting Counter values to User Settings
         targetObjRegisterCountdownTimer = subjectResponseWaitTime;
         avatarFaceGazeCountdownTimer = faceFixationWaitTime;
@@ -50,12 +51,16 @@ public class ExperimentController : MonoBehaviour
         endPointDirection = targetHeadEndPoint.GetComponent<TargetEndPointProperty>().direction.ToString();
         //Fixates the headTarget position to the reference GameObject of initialHeadTargetPosition
         headTarget.transform.position = initialHeadTargetPosition.transform.position;
+        isCueHierarchy = true; //N.B: Remove this as this will ultimately come from the settings
         //After this setup will wait till the eye contact has been established 
+        //Registration of FoveProperties
+        FoveManager.RegisterCapabilities(Fove.ClientCapabilities.UserPresence);
+        isKeepPointing = true;
     }
 
     // Update is called once per frame
     void Update()
-    {
+    {        
         //Recording the user's eyeContact response
         if (waitForEyeContact == true)//waits for the eyeContact flag to turn on
         {
@@ -70,7 +75,8 @@ public class ExperimentController : MonoBehaviour
                     waitForEyeContact = false;//turn off eye contact response flag
                     //After Eye Contact has been established will start the Coroutine
                     //Coroutine to move the headTarget so as to move the avatar head and the Arm Animation
-                    StartCoroutine(MoveTargetBall(endPointDirection));
+                    HeadMovement();
+                    
                 }
                 else if (GazeCursor.currentGazedObject != avatarHeadRegion.name)//check is fixation is on some other object 
                 {
@@ -98,19 +104,30 @@ public class ExperimentController : MonoBehaviour
                     //N.B: HELP REQUIRED !!!
                     Debug.Log("User Response is: " + currentGazedObject);
                     waitForResponse = false;//turn off wait for response flag
-                    //Increment the curent project counter
-                    ExperimentSettings.currentTrialCount += 1;
-                    //Check if any remaining trials 
-                    if (ExperimentSettings.currentTrialCount > ExperimentSettings.trialCount)
+                    // N.B: Add conditon to check if user gazed correct target is incorrect
+                    if (isCueHierarchy)
                     {
-                        //Load the exit scene, with some features of the Interim Menu
+                        targetObjRegisterCountdownTimer = subjectResponseWaitTime;
+                        isCueHierarchy = false;
+                        HandMovement();
                     }
-                    else if (ExperimentSettings.trialCount >= ExperimentSettings.currentTrialCount)
+                    else
                     {
-                        //First reload the Interim Menu which will again reload the trial
-                        //For dev purpose only loading the trial Scene again
-                        SceneManager.LoadScene(1);//Loading the Experiment Scene Again
+                        //Increment the curent project counter
+                        ExperimentSettings.currentTrialCount += 1;
+                        //Check if any remaining trials 
+                        if (ExperimentSettings.currentTrialCount > ExperimentSettings.trialCount)
+                        {
+                            //Load the exit scene, with some features of the Interim Menu
+                        }
+                        else if (ExperimentSettings.trialCount >= ExperimentSettings.currentTrialCount)
+                        {
+                            //First reload the Interim Menu which will again reload the trial
+                            //For dev purpose only loading the trial Scene again
+                            SceneManager.LoadScene(1);//Loading the Experiment Scene Again
+                        }
                     }
+                    
                 }
                 else  //If the currentGazedObject has changed or not equal to prev GameObj. N.B: Will not work if the user is 
                 {
@@ -124,10 +141,43 @@ public class ExperimentController : MonoBehaviour
             }
         }
     }
-
-    private void FixedUpdate()
+    //Function to call the ball/head movement coroutine
+    void HeadMovement()
     {
+        StartCoroutine(MoveTargetBall(endPointDirection));
+    }
+    //Triggers the events to call the Hand Movement Animation
+    void HandMovement()
+    {
+        //At this point the ball has moved to it's targetEndPoint
+        //At this point we should start checking if the user is able to Gaze at the correct object or not
+        //If we need to mve only the Arm before running this we can set the 
+        //Manually hard-coding for the Arm Movement animation to run after the Head Movement
+        if (endPointDirection == "Right")
+        {
+            if (isKeepPointing)
+            {
+                OnObjectTrackedInRightDir?.Invoke(ExperimentSettings.cueDeliveryDuration, "PointRightStay");
+            }
+            else
+            {
+                OnObjectTrackedInRightDir?.Invoke(ExperimentSettings.cueDeliveryDuration, "PointRight");
+            }
+        }
+        else
+        {
+            if (isKeepPointing)
+            {
+                OnObjectTrackedInLeftDir?.Invoke(ExperimentSettings.cueDeliveryDuration, "PointLeftStay");
+            }
+            else
+            {
+                OnObjectTrackedInLeftDir?.Invoke(ExperimentSettings.cueDeliveryDuration, "PointLeft");
+            } //Invoke Event only if subscribed
+        }
 
+
+        //waitForResponse = true;
     }
     IEnumerator MoveTargetBall(string endPointDirection)
     {
@@ -141,15 +191,15 @@ public class ExperimentController : MonoBehaviour
         }
         //Bringing manually to the end position coz with Lerp u never reach the end position
         headTarget.transform.position = targetHeadEndPoint.transform.position;
-        //At this point the ball has moved to it's targetEndPoint
-        //At this point we should start checking if the user is able to Gaze at the correct object or not
-        //If we need to mve only the Arm before running this we can set the 
-        //Manually hard-coding for the Arm Movement animation to run after the Head Movement
-        if (endPointDirection == "Right") OnObjectTrackedInRightDir();
-        else OnObjectTrackedInLeftDir();
-        //Currently Animation is asynchronous, execute below only after animation is complete
-        //Turn on the flag for waiting for response after al the cues are delivered
-        waitForResponse = true;
+
+        if (!isCueHierarchy)
+        {
+            HandMovement();
+        }
+        else
+        {
+            waitForResponse = true;
+        }
         yield return null;
-    }
+    }    
 }

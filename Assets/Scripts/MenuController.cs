@@ -10,8 +10,9 @@ using TMPro;
 public class MenuController : MonoBehaviour
 {
     //Referencing to the input values from the form
-    [SerializeField] private TMP_InputField uid, trialCount, targetObjectsCount, targetObjectArrayIndices,
-        avatar, faceFixationTime, responseRegistrationFixationDuration, cueDeliverySpeed, experimentMetaData;
+    [SerializeField]
+    private TMP_InputField uid, trialCount, targetObjectsCount, targetObjectArrayIndices,
+        avatar, faceFixationDuration, responseRegistrationFixationDuration, cueDeliveryDuration, experimentMetaData;
     [SerializeField] private Toggle enforceEyeContact;
     //Temporary Hardcoded Indices
     private int[] hardCodedTargetObjects = { 0, 1, 2, 3, 4, 5, 6, 7 };
@@ -25,9 +26,9 @@ public class MenuController : MonoBehaviour
             ExperimentSettings.trialCount = int.Parse(trialCount.text);
             ExperimentSettings.targetObjectsCount = int.Parse("2"); //hardcoded value
             //Fetching the experiment settings and convert into float
-            ExperimentSettings.faceFixationTime = float.Parse(faceFixationTime.text);
+            ExperimentSettings.faceFixationDuration = float.Parse(faceFixationDuration.text);
             ExperimentSettings.responseRegistrationFixationDuration = float.Parse(responseRegistrationFixationDuration.text);
-            ExperimentSettings.cueDeliverySpeed = float.Parse(responseRegistrationFixationDuration.text);
+            ExperimentSettings.cueDeliveryDuration = float.Parse(cueDeliveryDuration.text);
             //Fetching the experiment settings and convert into bool
             //Comparing the expression and storing the bool response
             ExperimentSettings.enforceEyeContact = enforceEyeContact.isOn;

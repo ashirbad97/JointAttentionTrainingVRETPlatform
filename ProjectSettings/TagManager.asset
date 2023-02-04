@@ -7,6 +7,8 @@ TagManager:
   - endTarget
   - LeftMid
   - RightMid
+  - LeftArm
+  - RightArm
   layers:
   - Default
   - TransparentFX

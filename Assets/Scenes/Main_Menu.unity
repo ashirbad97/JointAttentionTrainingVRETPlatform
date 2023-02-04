@@ -157,9 +157,9 @@ MonoBehaviour:
   targetObjectsCount: {fileID: 473637239}
   targetObjectArrayIndices: {fileID: 1570408188}
   avatar: {fileID: 652337448}
-  faceFixationTime: {fileID: 974820830}
+  faceFixationDuration: {fileID: 974820830}
   responseRegistrationFixationDuration: {fileID: 821493153}
-  cueDeliverySpeed: {fileID: 1716503081}
+  cueDeliveryDuration: {fileID: 1716503081}
   experimentMetaData: {fileID: 2082604394}
   enforceEyeContact: {fileID: 529630075}
 --- !u!4 &68050533
@@ -8550,7 +8550,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2033540129}
   m_Layer: 5
-  m_Name: CueDeliverySpeed
+  m_Name: CueDeliveryDuration
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

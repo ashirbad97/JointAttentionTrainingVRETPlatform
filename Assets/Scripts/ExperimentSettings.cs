@@ -6,7 +6,7 @@ public class ExperimentSettings
 {
     //Static Parameters constant throughout the experiment sessions
     public static int uid, trialCount, targetObjectsCount;
-    public static float faceFixationTime = 10f, responseRegistrationFixationDuration = 10f, cueDeliverySpeed = 10f; //To prevent the cue delivery right away when the scene is only run
+    public static float faceFixationDuration = 10f, responseRegistrationFixationDuration = 10f, cueDeliveryDuration = 10f; //To prevent the cue delivery right away when the scene is only run
     public static bool enforceEyeContact;
     public static int[] targetObjectArrayIndices;
     public static string avatar;

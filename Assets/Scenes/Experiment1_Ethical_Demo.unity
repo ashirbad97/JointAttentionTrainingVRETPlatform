@@ -1188,6 +1188,8 @@ MonoBehaviour:
   avatarHeadRegion: {fileID: 2939500554151001532}
   waitForEyeContact: 1
   waitForResponse: 0
+  avatarFaceGazeCountdownTimer: 0
+  targetObjRegisterCountdownTimer: 0
 --- !u!4 &1139205997
 Transform:
   m_ObjectHideFlags: 0
@@ -2025,7 +2027,7 @@ GameObject:
   - component: {fileID: 527965058888182569}
   m_Layer: 0
   m_Name: LeftArm
-  m_TagString: Untagged
+  m_TagString: LeftArm
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2172,6 +2174,8 @@ MonoBehaviour:
   targetBall: {fileID: 1912101482}
   targetHand: {fileID: 2017597167}
   characterAnimator: {fileID: 1782822099324934617}
+  leftHandAnimation: {fileID: 7400000, guid: 0215bfec86332a84282472b48c971dc6, type: 2}
+  rightHandAnimation: {fileID: 7400000, guid: 94656f16ca1f85b458ef43f220c8cb3f, type: 2}
 --- !u!1 &560646318798611827
 GameObject:
   m_ObjectHideFlags: 0
@@ -3962,7 +3966,7 @@ GameObject:
   - component: {fileID: 3752356039315153043}
   m_Layer: 0
   m_Name: RightArm
-  m_TagString: Untagged
+  m_TagString: RightArm
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3982,6 +3986,8 @@ MonoBehaviour:
   targetBall: {fileID: 1912101482}
   targetHand: {fileID: 396015420}
   characterAnimator: {fileID: 1782822099324934617}
+  leftHandAnimation: {fileID: 7400000, guid: 0215bfec86332a84282472b48c971dc6, type: 2}
+  rightHandAnimation: {fileID: 7400000, guid: 94656f16ca1f85b458ef43f220c8cb3f, type: 2}
 --- !u!1 &3848957021118526299
 GameObject:
   m_ObjectHideFlags: 0
