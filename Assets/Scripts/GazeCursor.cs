@@ -10,7 +10,7 @@ public class GazeCursor : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        currentGazedObject = null;
     }
 
     // Update is called once per frame
@@ -22,12 +22,19 @@ public class GazeCursor : MonoBehaviour
         //transform.position = foveInterface.GetCombinedGazeRay().value.GetPoint(1);
 
         RaycastHit hit;
-        
+        Debug.Log("Fove Gaze Cursor value: " + foveInterface.GetCombinedGazeRay());
+        // Condition if the ray being casted using the combined Fove Ray which is being thrown at a distant of z=100.
+        //N.B: Condition is true only if there is a ray hit with a collider
         if (Physics.Raycast(foveInterface.GetCombinedGazeRay().value, out hit, 100))
         {
-           //print("GazeCursor Hit Collider " + hit.transform.name);
-           currentGazedObject = hit.transform.name;
-           transform.position = hit.point;
+            print("GazeCursor Hit Collider " + hit.transform.name);
+            currentGazedObject = hit.transform.name;
+            transform.position = hit.point;
+        }
+        //N.B: If ray is not hitting on any collider
+        else
+        {
+            currentGazedObject = null;
         }
     }
 }

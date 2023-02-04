@@ -1184,6 +1184,9 @@ MonoBehaviour:
   timeToMoveHeadTarget: 15
   initialHeadTargetPosition: {fileID: 807810806}
   subjectResponseWaitTime: 5
+  faceFixationWaitTime: 0
+  avatarHeadRegion: {fileID: 2939500554151001532}
+  waitForEyeContact: 1
   waitForResponse: 0
 --- !u!4 &1139205997
 Transform:
