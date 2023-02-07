@@ -6,21 +6,11 @@ using UnityEngine;
 public class TargetEndPointProperty : MonoBehaviour
 {
     //Set the directions of the endTargets
-    public enum endTargetDirection {
+    public enum endTargetDirection
+    {
         Left,
         Right
     }
     //Shows a drop-down list to selet the direction
     [SerializeField] public endTargetDirection direction;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

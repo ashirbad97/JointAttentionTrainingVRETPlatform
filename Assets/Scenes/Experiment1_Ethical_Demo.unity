@@ -1186,10 +1186,11 @@ MonoBehaviour:
   subjectResponseWaitTime: 5
   faceFixationWaitTime: 0
   avatarHeadRegion: {fileID: 2939500554151001532}
-  waitForEyeContact: 1
-  waitForResponse: 0
+  isCueHierarchy: 0
+  isKeepPointing: 0
   avatarFaceGazeCountdownTimer: 0
   targetObjRegisterCountdownTimer: 0
+  waitForEyeContact: 1
 --- !u!4 &1139205997
 Transform:
   m_ObjectHideFlags: 0
@@ -1320,6 +1321,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   velocitySource: 2
+--- !u!114 &1257518497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1257518485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e47cc1d64b513934eb1c29e9f0e2e275, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  direction: 0
 --- !u!1 &1441775105
 GameObject:
   m_ObjectHideFlags: 0
@@ -1864,6 +1878,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   velocitySource: 2
+--- !u!114 &2079221958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2079221946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e47cc1d64b513934eb1c29e9f0e2e275, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  direction: 1
 --- !u!1 &12976355740682132
 GameObject:
   m_ObjectHideFlags: 0

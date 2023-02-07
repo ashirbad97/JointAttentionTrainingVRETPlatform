@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 [System.Serializable]
 public class TrialValue
 {
     //Parameters unique for each trial
     public int trial_currentTrialNo;
-    public int[] trial_spawnedObjects;
+    public GameObject[] trial_spawnedObjects;
     public int trial_targetObject;
     public int trial_registeredObject;
     public float trial_durationBtwCueDeliveryAndResponseRegistration;

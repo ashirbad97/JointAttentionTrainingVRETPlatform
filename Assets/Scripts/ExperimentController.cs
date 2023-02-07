@@ -21,20 +21,26 @@ public class ExperimentController : MonoBehaviour
     [SerializeField] float avatarFaceGazeCountdownTimer;
     [SerializeField] float targetObjRegisterCountdownTimer;
     //Declaring Events for Arm Animation of the Avatar
-    public static event Action<float,string> OnObjectTrackedInRightDir;
-    public static event Action<float,string> OnObjectTrackedInLeftDir;
-
-
+    public static event Action<float, string> OnObjectTrackedInRightDir;
+    public static event Action<float, string> OnObjectTrackedInLeftDir;
     public bool waitForEyeContact = true;
     public static bool waitForResponse = false;
     string currentGazedObject;
     string prevGazedObject;
     string endPointDirection;
+    FoveInterface fove;
+    GameObject[] endTargets;
+    GameObject[] targetObjects;
+    TrialValue trialData = new TrialValue();
     // Start is called before the first frame update
     void Start()
     {
         Debug.Log("Current Trial is: " + ExperimentSettings.currentTrialCount);
-        //Assigning parameter variables with settings values from Input Menu
+        // Adding current trial count into trialData
+        trialData.trial_currentTrialNo = ExperimentSettings.currentTrialCount;
+        // Adding target objects into trialData
+        trialData.trial_spawnedObjects = GameObject.FindGameObjectsWithTag("targetObject");
+        // Assigning parameter variables with settings values from Input Menu
         timeToMoveHeadTarget = ExperimentSettings.cueDeliveryDuration;
         subjectResponseWaitTime = ExperimentSettings.responseRegistrationFixationDuration;
         faceFixationWaitTime = ExperimentSettings.faceFixationDuration;
@@ -42,25 +48,31 @@ public class ExperimentController : MonoBehaviour
         targetObjRegisterCountdownTimer = subjectResponseWaitTime;
         avatarFaceGazeCountdownTimer = faceFixationWaitTime;
         //Find all the endTarget tagged objects into an array and select one randomly
-        GameObject[] endTargets;
         endTargets = GameObject.FindGameObjectsWithTag("endTarget");
         //Randomly select a endTarget
         int randomTargetIndex = UnityEngine.Random.Range(0, endTargets.Length);
         targetHeadEndPoint = endTargets[randomTargetIndex];
         //Find the direction component attached from the script
         endPointDirection = targetHeadEndPoint.GetComponent<TargetEndPointProperty>().direction.ToString();
+        // Adding the selected trialObject into trialData
+
         //Fixates the headTarget position to the reference GameObject of initialHeadTargetPosition
         headTarget.transform.position = initialHeadTargetPosition.transform.position;
         isCueHierarchy = true; //N.B: Remove this as this will ultimately come from the settings
         //After this setup will wait till the eye contact has been established 
         //Registration of FoveProperties
         FoveManager.RegisterCapabilities(Fove.ClientCapabilities.UserPresence);
-        isKeepPointing = true;
+        FoveManager.RegisterCapabilities(Fove.ClientCapabilities.GazeDepth);
+        isKeepPointing = true;//Flag to recognize if pointing has to be done or not
+        fove = FindObjectOfType<FoveInterface>();//Finding the existing fove object in the scene
     }
 
     // Update is called once per frame
     void Update()
-    {        
+    {
+        //Print the raw gaze values from the fove object
+        // Debug.Log("Gaze Depth: " + FoveManager.GetCombinedGazeDepth().value);
+        // Debug.Log("Eye Position: " + fove.GetCombinedGazeRay().value.GetPoint(FoveManager.GetCombinedGazeDepth().value));
         //Recording the user's eyeContact response
         if (waitForEyeContact == true)//waits for the eyeContact flag to turn on
         {
@@ -76,7 +88,7 @@ public class ExperimentController : MonoBehaviour
                     //After Eye Contact has been established will start the Coroutine
                     //Coroutine to move the headTarget so as to move the avatar head and the Arm Animation
                     HeadMovement();
-                    
+
                 }
                 else if (GazeCursor.currentGazedObject != avatarHeadRegion.name)//check is fixation is on some other object 
                 {
@@ -127,7 +139,7 @@ public class ExperimentController : MonoBehaviour
                             SceneManager.LoadScene(1);//Loading the Experiment Scene Again
                         }
                     }
-                    
+
                 }
                 else  //If the currentGazedObject has changed or not equal to prev GameObj. N.B: Will not work if the user is 
                 {
@@ -155,6 +167,7 @@ public class ExperimentController : MonoBehaviour
         //Manually hard-coding for the Arm Movement animation to run after the Head Movement
         if (endPointDirection == "Right")
         {
+            //Checks for the bool value and pass the parameters. It has been configured in AnimatorController to stay or place the finger back
             if (isKeepPointing)
             {
                 OnObjectTrackedInRightDir?.Invoke(ExperimentSettings.cueDeliveryDuration, "PointRightStay");
@@ -201,5 +214,5 @@ public class ExperimentController : MonoBehaviour
             waitForResponse = true;
         }
         yield return null;
-    }    
+    }
 }
