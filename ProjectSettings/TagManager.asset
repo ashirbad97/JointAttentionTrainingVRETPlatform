@@ -10,6 +10,7 @@ TagManager:
   - LeftArm
   - RightArm
   - targetObject
+  - Avatar
   layers:
   - Default
   - TransparentFX

@@ -2597,8 +2597,8 @@ GameObject:
   - component: {fileID: 1782822099324934618}
   - component: {fileID: 1782822099324934619}
   m_Layer: 0
-  m_Name: Avatar
-  m_TagString: Untagged
+  m_Name: Ashirbad
+  m_TagString: Avatar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
