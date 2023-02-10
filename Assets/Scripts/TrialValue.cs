@@ -6,7 +6,8 @@ public class TrialValue
 {
     //Parameters unique for each trial
     public int trial_currentTrialNo;
-    public GameObject[] trial_spawnedObjects;
+    public List<string> trial_spawnedObjects;
+    public string trial_targetDirection;
     public string trial_targetObject;
     public string trial_registeredObject;
     public float trial_durationBtwCueDeliveryAndResponseRegistration;
@@ -19,4 +20,5 @@ public class TrialValue
     public bool trial_isHandCueUsed;
     public float trial_totalDuration;
     public string trial_trialFileName;
+
 }

@@ -22,12 +22,12 @@ public class GazeCursor : MonoBehaviour
         //transform.position = foveInterface.GetCombinedGazeRay().value.GetPoint(1);
 
         RaycastHit hit;
-        Debug.Log("Fove Gaze Cursor value: " + foveInterface.GetCombinedGazeRay().value);
+        // Debug.Log("Fove Gaze Cursor value: " + foveInterface.GetCombinedGazeRay().value);
         // Condition if the ray being casted using the combined Fove Ray which is being thrown at a distant of z=100.
         //N.B: Condition is true only if there is a ray hit with a collider
         if (Physics.Raycast(foveInterface.GetCombinedGazeRay().value, out hit, 100))
         {
-            print("GazeCursor Hit Collider " + hit.transform.name);
+            // print("GazeCursor Hit Collider " + hit.transform.name);
             currentGazedObject = hit.transform.name;
             transform.position = hit.point;
         }

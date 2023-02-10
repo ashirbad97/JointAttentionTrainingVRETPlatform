@@ -52,11 +52,8 @@ public class ExperimentController : MonoBehaviour
         }
         // Adding the avatar into trialData
         trialData.trial_currentAvatar = ExperimentSettings.avatar;
-        Debug.Log("Current Trial is: " + ExperimentSettings.currentTrialCount);
         // Adding current trial count into trialData
         trialData.trial_currentTrialNo = ExperimentSettings.currentTrialCount;
-        // Adding target objects into trialData
-        trialData.trial_spawnedObjects = GameObject.FindGameObjectsWithTag("targetObject");
         // Assigning parameter variables with settings values from Input Menu
         timeToMoveHeadTarget = ExperimentSettings.cueDeliveryDuration;
         subjectResponseWaitTime = ExperimentSettings.responseRegistrationFixationDuration;
@@ -71,15 +68,24 @@ public class ExperimentController : MonoBehaviour
         targetHeadEndPoint = endTargets[randomTargetIndex];
         //Find the direction component attached from the script
         endPointDirection = targetHeadEndPoint.GetComponent<TargetEndPointProperty>().direction.ToString();
+        trialData.trial_targetDirection = endPointDirection;
+        Debug.Log("Target Direction is: " + endPointDirection);
         // Adding the selected trialObject into trialData
         targetObjects = GameObject.FindGameObjectsWithTag("targetObject");
         // Iterating through all the spawned GameObjects and find the direction property and compare with the endPointDirection 
+        List<string> spawnedObjects = new List<string>();
         foreach (GameObject obj in targetObjects)
         {
             TargetEndPointProperty objName = obj.GetComponent<TargetEndPointProperty>();
+            spawnedObjects.Add(objName.name); // Adding all spawned objects to the list in trialData
             if (objName.direction.ToString() == endPointDirection)
+            {
+                Debug.Log("Target Object is: " + objName.name);
                 trialData.trial_targetObject = objName.name;
+            }
         }
+        // Adding target objects into trialData
+        trialData.trial_spawnedObjects = spawnedObjects;
         //Fixates the headTarget position to the reference GameObject of initialHeadTargetPosition
         headTarget.transform.position = initialHeadTargetPosition.transform.position;
         isCueHierarchy = true; //N.B: Remove this as this will ultimately come from the settings
@@ -89,6 +95,7 @@ public class ExperimentController : MonoBehaviour
         FoveManager.RegisterCapabilities(Fove.ClientCapabilities.GazeDepth);
         isKeepPointing = true;//Flag to recognize if pointing has to be done or not
         fove = FindObjectOfType<FoveInterface>();//Finding the existing fove object in the scene
+        Debug.Log("Current Trial is: " + ExperimentSettings.currentTrialCount);
     }
 
     // Update is called once per frame
@@ -156,21 +163,24 @@ public class ExperimentController : MonoBehaviour
                     }
                     else
                     {
-                        //Increment the curent project counter
-                        ExperimentSettings.currentTrialCount += 1;
                         // Fetches the system time, check if this is in current time format or it varies according to the system time format
                         trialData.trial_endTime = DateTime.Now.ToString();
                         //Check if any remaining trials, condition to check for the last trial in the session
-                        if (ExperimentSettings.currentTrialCount > ExperimentSettings.trialCount)
+                        if (ExperimentSettings.currentTrialCount == ExperimentSettings.trialCount) //check for last session
                         {
+                            Debug.Log("This is the last trial will load the exit scene");
                             ExperimentSettings.experimentSessionEndTime = DateTime.Now.ToString();
+                            DataDumper.DumpSessionDataExpEnd();
                             //Load the exit scene, with some features of the Interim Menu
                         }
-                        else if (ExperimentSettings.trialCount >= ExperimentSettings.currentTrialCount)
+                        else if (ExperimentSettings.trialCount > ExperimentSettings.currentTrialCount) //check for any remaining sessions
                         {
+                            Debug.Log("No of trials remaining: " + (ExperimentSettings.trialCount - ExperimentSettings.currentTrialCount));
                             //First reload the Interim Menu which will again reload the trial
                             //For dev purpose only loading the trial Scene again
-                            DumpTrialData(trialData);
+                            DataDumper.DumpTrialData(trialData);
+                            //Increment the curent project counter
+                            ExperimentSettings.currentTrialCount += 1;
                             SceneManager.LoadScene(1);//Loading the Experiment Scene Again
                         }
                     }
@@ -199,6 +209,7 @@ public class ExperimentController : MonoBehaviour
         trialData.trial_isHandCueUsed = true;
         if (endPointDirection == "Right")
         {
+            Debug.Log("Start Hand Movement to Right");
             //Checks for the bool value and pass the parameters. It has been configured in AnimatorController to stay or place the finger back
             if (isKeepPointing)
             {
@@ -211,6 +222,7 @@ public class ExperimentController : MonoBehaviour
         }
         else
         {
+            Debug.Log("Start Hand Movement to Left");
             if (isKeepPointing)
             {
                 OnObjectTrackedInLeftDir?.Invoke(ExperimentSettings.cueDeliveryDuration, "PointLeftStay");
@@ -222,22 +234,10 @@ public class ExperimentController : MonoBehaviour
         }
         //waitForResponse = true;
     }
-    // Function to dump the trial data into FS and later on DB
-    void DumpTrialData(TrialValue dumpTrialData)
-    {
-        // Check if Dir does not exist create a new one
-        if (!Directory.Exists(ExperimentSettings.masterDirName + ExperimentSettings.experimentSessionParentDirName))
-        {
-            Directory.CreateDirectory(ExperimentSettings.masterDirName + ExperimentSettings.experimentSessionParentDirName);
-        }
-        else
-        {
-            trialData.trial_trialFileName = ExperimentSettings.masterDirName + ExperimentSettings.experimentSessionParentDirName + "/" + "Trial" + "_" + ExperimentSettings.currentTrialCount.ToString() + ".json";
-            File.WriteAllTextAsync(JsonUtility.ToJson(trialData), trialData.trial_trialFileName);
-        }
-    }
     IEnumerator MoveTargetBall(string endPointDirection)
     {
+        Debug.Log("Head Movement Direction is: " + endPointDirection);
+        // End Temporary Fix for Direction Nomenclature Error
         //Since updates type functions are called each frame, the transform position change per frame, since we are doing it using a Coroutine and based on time rather than frames we manually update the position based on a loop. 
         float elapsedTime = 0;
         while (elapsedTime < timeToMoveHeadTarget)

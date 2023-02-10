@@ -22,6 +22,7 @@ public class MenuController : MonoBehaviour
     {
         try
         {
+            Debug.Log("Experiment Session started");
             //Fetching the experiment settings and convert into int
             ExperimentSettings.uid = int.Parse(uid.text);
             ExperimentSettings.trialCount = int.Parse(trialCount.text);
@@ -37,14 +38,15 @@ public class MenuController : MonoBehaviour
             ExperimentSettings.is_enforceEyeContact = is_enforceEyeContact.isOn;
             //Fetching the experiment settings and convert into array
             //Actual Value: targetObjectArrayIndices.text.Trim().Split(",") . N.B: Before using this convert the data type in ExperimentSettings to string
-            ExperimentSettings.targetObjectArrayIndices = hardCodedTargetObjects; //hardcoded value
+            ExperimentSettings.targetObjectArrayIndices = string.Join("", hardCodedTargetObjects); //hardcoded value
             ExperimentSettings.experimentMetaData = experimentMetaData.text;
+            ExperimentSettings.avatar = "Ashirbad";
             //Debug.Log(ExperimentSettings.uid+ ExperimentSettings.trialCount+ ExperimentSettings.targetObjectsCount+ ExperimentSettings.faceFixationTime.ToString()+ ExperimentSettings.responseRegistrationFixationDuration+ ExperimentSettings.cueDeliverySpeed+ ExperimentSettings.enforceEyeContact+ ExperimentSettings.targetObjectArrayIndices+ ExperimentSettings.avatar+ExperimentSettings.experimentMetaData);
             ExperimentSettings.experimentSessionStartTime = DateTime.Now.ToString();
             // Generate the experiment session Dir name and add it to Experiment Settings
-            experimentSessionDirName = DateTime.Now.ToLongDateString() + "_" + ExperimentSettings.uid;
+            experimentSessionDirName = "JAMaster_Date_" + DateTime.Now.ToLongDateString() + "_TimeUTC_" + DateTime.Now.ToFileTimeUtc() + "_UID_" + ExperimentSettings.uid;
             ExperimentSettings.experimentSessionParentDirName = experimentSessionDirName;
-            DumpSessionData();
+            DataDumper.DumpSessionDataExpStart();
             //Load the next scene
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
@@ -56,32 +58,6 @@ public class MenuController : MonoBehaviour
 
     }
     // Function to dump the session data into FS and later on DB
-    void DumpSessionData()
-    {
-        if (Directory.Exists(ExperimentSettings.masterDirName + ExperimentSettings.experimentSessionParentDirName))
-        {
-            ExperimentSettings.experimentSessionSettingsFileName = ExperimentSettings.masterDirName + ExperimentSettings.experimentSessionParentDirName + "/" + "SessionData" + ".txt";
-            File.AppendAllTextAsync(ExperimentSettings.experimentSessionSettingsFileName, "UID: " + ExperimentSettings.uid);
-            File.AppendAllTextAsync(ExperimentSettings.experimentSessionSettingsFileName, "Trial Count: " + ExperimentSettings.trialCount);
-            File.AppendAllTextAsync(ExperimentSettings.experimentSessionSettingsFileName, "No. of Target Objects: " + ExperimentSettings.targetObjectsCount);
-            File.AppendAllTextAsync(ExperimentSettings.experimentSessionSettingsFileName, "Face Fixation Duration: " + ExperimentSettings.faceFixationDuration);
-            File.AppendAllTextAsync(ExperimentSettings.experimentSessionSettingsFileName, "Response Registration Fixation Duration: " + ExperimentSettings.responseRegistrationFixationDuration);
-            File.AppendAllTextAsync(ExperimentSettings.experimentSessionSettingsFileName, "Cue Delivery Duration: " + ExperimentSettings.cueDeliveryDuration);
-            File.AppendAllTextAsync(ExperimentSettings.experimentSessionSettingsFileName, "EnforceEyeContact: " + ExperimentSettings.is_enforceEyeContact);
-            File.AppendAllTextAsync(ExperimentSettings.experimentSessionSettingsFileName, "ConditionedCueSequence: " + ExperimentSettings.is_conditionedCueSequence);
-            File.AppendAllTextAsync(ExperimentSettings.experimentSessionSettingsFileName, "KeepFingerPointing: " + ExperimentSettings.is_keepFingerPointing);
-            File.AppendAllTextAsync(ExperimentSettings.experimentSessionSettingsFileName, "TargetObjArrayIndices: " + ExperimentSettings.targetObjectArrayIndices);
-            File.AppendAllTextAsync(ExperimentSettings.experimentSessionSettingsFileName, "Avatar: " + ExperimentSettings.avatar);
-            File.AppendAllTextAsync(ExperimentSettings.experimentSessionSettingsFileName, "Experiment Metadata: " + ExperimentSettings.experimentMetaData);
-            File.AppendAllTextAsync(ExperimentSettings.experimentSessionSettingsFileName, "Experiment Session Total Duration: " + ExperimentSettings.experimentSessionTotalDuration);
-            File.AppendAllTextAsync(ExperimentSettings.experimentSessionSettingsFileName, "Experiment Session Start Time: " + ExperimentSettings.experimentSessionStartTime);
-            File.AppendAllTextAsync(ExperimentSettings.experimentSessionSettingsFileName, "Experiment Session End Time: " + ExperimentSettings.experimentSessionEndTime);
-            File.AppendAllTextAsync(ExperimentSettings.experimentSessionSettingsFileName, "Experiment Session Master Directory Name: " + ExperimentSettings.masterDirName);
-            File.AppendAllTextAsync(ExperimentSettings.experimentSessionSettingsFileName, "Experiment Session Parent Directory Name: " + ExperimentSettings.experimentSessionParentDirName);
-            File.AppendAllTextAsync(ExperimentSettings.experimentSessionSettingsFileName, "Experiment Session Settings File Name: " + ExperimentSettings.experimentSessionSettingsFileName);
-            File.AppendAllTextAsync(ExperimentSettings.experimentSessionSettingsFileName, "Last Conducted Session No: " + ExperimentSettings.currentTrialCount);
-        }
-    }
     public void quitGame()
     {
         //Close the application
