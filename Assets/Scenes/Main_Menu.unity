@@ -165,6 +165,7 @@ MonoBehaviour:
   is_enforceEyeContact: {fileID: 529630075}
   is_conditionedCueSequence: {fileID: 1252013782}
   is_keepFingerPointing: {fileID: 667603421}
+  experimentSessionDirName: 
 --- !u!222 &68050533
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7411,7 +7412,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1521144083
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9049,7 +9050,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1842585646
 RectTransform:
   m_ObjectHideFlags: 0
