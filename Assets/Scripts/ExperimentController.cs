@@ -31,6 +31,9 @@ public class ExperimentController : MonoBehaviour
     string currentGazedObject;
     string prevGazedObject;
     string endPointDirection;
+    TimeSpan trialTotalDuration;
+    DateTime trialStartTime;
+    DateTime trialEndTime;
     FoveInterface fove;
     GameObject[] endTargets;
     GameObject[] targetObjects;
@@ -42,7 +45,7 @@ public class ExperimentController : MonoBehaviour
         isCueHierarchy = ExperimentSettings.is_conditionedCueSequence;
         isKeepPointing = ExperimentSettings.is_keepFingerPointing;
         // Fetches the system time, check if this is in current time format or it varies according to the system time format
-        trialData.trial_startTime = DateTime.Now.ToString();
+        trialStartTime = DateTime.Now;
         // Check if the avatar is already not set and then set the avatar
         // Ensure that this will be set in the first trial and not in each and every trial
         if (ExperimentSettings.avatar != "")
@@ -164,24 +167,18 @@ public class ExperimentController : MonoBehaviour
                     else
                     {
                         // Fetches the system time, check if this is in current time format or it varies according to the system time format
-                        trialData.trial_endTime = DateTime.Now.ToString();
+                        trialEndTime = DateTime.Now;
+                        trialTotalDuration = trialEndTime.Subtract(trialStartTime);
+                        // Adds all the trial time values into trialData
+                        trialData.trial_startTime = trialStartTime.ToString();
+                        trialData.trial_endTime = trialEndTime.ToString();
+                        trialData.trial_totalDuration = trialTotalDuration.ToString();
                         //Check if any remaining trials, condition to check for the last trial in the session
-                        if (ExperimentSettings.currentTrialCount == ExperimentSettings.trialCount) //check for last session
-                        {
-                            Debug.Log("This is the last trial will load the exit scene");
-                            ExperimentSettings.experimentSessionEndTime = DateTime.Now.ToString();
-                            DataDumper.DumpSessionDataExpEnd();
-                            //Load the exit scene, with some features of the Interim Menu
-                        }
-                        else if (ExperimentSettings.trialCount > ExperimentSettings.currentTrialCount) //check for any remaining sessions
+                        if (ExperimentSettings.trialCount >= ExperimentSettings.currentTrialCount) //check for any remaining sessions
                         {
                             Debug.Log("No of trials remaining: " + (ExperimentSettings.trialCount - ExperimentSettings.currentTrialCount));
-                            //First reload the Interim Menu which will again reload the trial
-                            //For dev purpose only loading the trial Scene again
-                            DataDumper.DumpTrialData(trialData);
-                            //Increment the curent project counter
-                            ExperimentSettings.currentTrialCount += 1;
-                            SceneManager.LoadScene(1);//Loading the Experiment Scene Again
+                            ExperimentSettings.prevTrialData = trialData;
+                            SceneManager.LoadScene("Interim_Menu");//Loading the Interim Menu Scene
                         }
                     }
                 }

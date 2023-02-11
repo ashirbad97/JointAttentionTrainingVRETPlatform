@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Experiment1_Ethical_Demo.unity
     guid: 14ab3a597b5b3d9419283f2b5bf00501
+  - enabled: 1
+    path: Assets/Scenes/Interim_Menu.unity
+    guid: 672b64794ae3ad14ba183b7e90b3c3e7
   m_configObjects: {}

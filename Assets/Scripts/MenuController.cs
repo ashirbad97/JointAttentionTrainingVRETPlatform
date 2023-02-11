@@ -48,7 +48,7 @@ public class MenuController : MonoBehaviour
             ExperimentSettings.experimentSessionParentDirName = experimentSessionDirName;
             DataDumper.DumpSessionDataExpStart();
             //Load the next scene
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            SceneManager.LoadScene("Experiment1_Ethical_Demo");
         }
         catch (Exception e)
         {

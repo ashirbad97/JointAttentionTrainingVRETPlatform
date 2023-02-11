@@ -18,4 +18,5 @@ public class ExperimentSettings
     public static string masterDirName = "D:/JAExpTrialOutput/";
     public static string experimentSessionParentDirName;
     public static string experimentSessionSettingsFileName;
+    public static TrialValue prevTrialData;// Will be updated after each trial is over to be displayed in the Interim Menus
 }

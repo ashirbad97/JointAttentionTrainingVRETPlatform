@@ -93,7 +93,7 @@ public class DataDumper
             else
             {
                 dumpTrialData.trial_trialFileName = Path.Combine(ExperimentSettings.masterDirName, ExperimentSettings.experimentSessionParentDirName + "/" + "Trial" + "_" + ExperimentSettings.currentTrialCount.ToString() + ".json");
-                Debug.Log(dumpTrialData.trial_trialFileName);
+                Debug.Log("Dumping trial data details into: " + dumpTrialData.trial_trialFileName);
                 File.AppendAllText(dumpTrialData.trial_trialFileName, JsonUtility.ToJson(dumpTrialData));
             }
         }
