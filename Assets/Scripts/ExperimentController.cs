@@ -91,12 +91,10 @@ public class ExperimentController : MonoBehaviour
         trialData.trial_spawnedObjects = spawnedObjects;
         //Fixates the headTarget position to the reference GameObject of initialHeadTargetPosition
         headTarget.transform.position = initialHeadTargetPosition.transform.position;
-        isCueHierarchy = true; //N.B: Remove this as this will ultimately come from the settings
         //After this setup will wait till the eye contact has been established 
         //Registration of FoveProperties
         FoveManager.RegisterCapabilities(Fove.ClientCapabilities.UserPresence);
         FoveManager.RegisterCapabilities(Fove.ClientCapabilities.GazeDepth);
-        isKeepPointing = true;//Flag to recognize if pointing has to be done or not
         fove = FindObjectOfType<FoveInterface>();//Finding the existing fove object in the scene
         Debug.Log("Current Trial is: " + ExperimentSettings.currentTrialCount);
     }
