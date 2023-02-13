@@ -38,8 +38,10 @@ public class ExperimentController : MonoBehaviour
     GameObject[] endTargets;
     GameObject[] targetObjects;
     TrialValue trialData = new TrialValue();
+
     void Start()
     {
+        // FoveManager.IsEyeTrackingReady();
         // Set trial settings from the session settings
         isCueHierarchy = ExperimentSettings.is_conditionedCueSequence;
         isKeepPointing = ExperimentSettings.is_keepFingerPointing;
@@ -94,6 +96,7 @@ public class ExperimentController : MonoBehaviour
         //Registration of FoveProperties
         FoveManager.RegisterCapabilities(Fove.ClientCapabilities.UserPresence);
         FoveManager.RegisterCapabilities(Fove.ClientCapabilities.GazeDepth);
+        FoveManager.RegisterCapabilities(Fove.ClientCapabilities.EyeTracking);
         fove = FindObjectOfType<FoveInterface>();//Finding the existing fove object in the scene
         Debug.Log("Current Trial is: " + ExperimentSettings.currentTrialCount);
     }
