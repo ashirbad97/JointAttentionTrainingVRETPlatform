@@ -41,7 +41,7 @@ public class ExperimentController : MonoBehaviour
 
     void Start()
     {
-        // FoveManager.IsEyeTrackingReady();
+        FoveManager.TareOrientation();
         // Set trial settings from the session settings
         isCueHierarchy = ExperimentSettings.is_conditionedCueSequence;
         isKeepPointing = ExperimentSettings.is_keepFingerPointing;
