@@ -26,7 +26,6 @@ public class MenuController : MonoBehaviour
         {
             FoveManager.RegisterCapabilities(Fove.ClientCapabilities.EyeTracking);
             FoveManager.RegisterCapabilities(Fove.ClientCapabilities.UserPresence);
-            Debug.Log("Experiment Session started");
             //Fetching the experiment settings and convert into int
             ExperimentSettings.uid = int.Parse(uid.text);
             ExperimentSettings.trialCount = int.Parse(trialCount.text);
@@ -48,10 +47,10 @@ public class MenuController : MonoBehaviour
             // Generate the experiment session Dir name and add it to Experiment Settings
             experimentSessionDirName = "JAMaster_Date_" + DateTime.Now.ToLongDateString() + "_TimeUTC_" + DateTime.Now.ToFileTimeUtc() + "_UID_" + ExperimentSettings.uid;
             ExperimentSettings.experimentSessionParentDirName = experimentSessionDirName;
-            // Check if user is wearing headset then only load
-            if (FoveManager.IsUserPresent())
+            //Check if user is wearing headset then only load
+            if (FoveManager.IsUserPresent().value)
             {
-                LoadExperiment();
+                CalibrateCheckAndStart();
             }
             else
             {
@@ -63,38 +62,66 @@ public class MenuController : MonoBehaviour
             Debug.Log("Caught exception during parsing of experiment settings");
             Debug.LogException(e, this);
         }
-
     }
+    // Check if user is wearing HMD or not
     IEnumerator checkUserPresence()
     {
         Debug.Log("Please wear Headset");
-        yield return FoveManager.WaitForUser;
-        LoadExperiment();
+        yield return FoveManager.WaitForUser;// Pauses coroutine until till user wears the headset
+        Debug.Log("Is user wearing headset ? " + FoveManager.IsUserPresent().value);
+        /**
+        @dev: For now double checking is not required enforce later if found useful
+        // Double check to ensure the user is wearing the headset
+         if (!FoveManager.IsUserPresent().value)// Even if due to some reason it skipped in the first time 
+             StartCoroutine(checkUserPresence());//check again and rerun the coroutine
+        else
+        */
+        CalibrateCheckAndStart();//Start calibration check 
     }
-    private void EnforceCalibration()
-    {
-        Debug.Log("Enforcing Calibration Start");
-        FoveManager.StartEyeTrackingCalibration();
-        if (FoveManager.IsEyeTrackingReady())
-        {
-            //Load the next scene
-            SceneManager.LoadScene("Experiment1_Ethical_Demo");
-        }
-    }
-    void LoadExperiment()
+    // Check if calibration is to be enforced and load the scene
+    void CalibrateCheckAndStart()
     {
         // Check for Calibration Option
         if (enforceCalibration)
         {
-            EnforceCalibration();
+            // N.B: If user is already calibrated no need to enforce it and start experiment , validate this condition properly
+            if (FoveManager.IsEyeTrackingReady().value)
+            {
+                Debug.Log("Already calibrated user, no need to enforce.");
+                StartExperiment();
+            }
+            else // If not enforce calibration
+                StartCoroutine(EnforceCalibration());
         }
         else
         {
-            // Register the time when the experiment session starts
-            ExperimentSettings.experimentSessionStartTime = DateTime.Now.ToString();
-            DataDumper.DumpSessionDataExpStart();//Only dump settings if we know that at least the first trial is going to start
-            SceneManager.LoadScene("Experiment1_Ethical_Demo");
+            StartExperiment();// If calibration not enforced simply start the experiment
         }
+    }
+    // Coroutine to enforce the calibration if provided in settings and re-run unless the user has been calibrated
+    IEnumerator EnforceCalibration()
+    {
+        Debug.Log("Enforcing Calibration Start");
+        FoveManager.StartEyeTrackingCalibration(); //Start the calibration screen
+        yield return FoveManager.WaitForEyeTrackingCalibrationEnd;// Pause the coroutine until the calibration of the user has ended
+        if (FoveManager.IsEyeTrackingReady().value)//If calibrated after eye tracking enforced load the experiment
+        {
+            Debug.Log("Calibration Successful");
+            StartExperiment();
+        }
+        else //If failed to calibrate after the enforced calibration has failed restart the calibration
+        {
+            Debug.Log("Calibration Failed. Start Again.");
+            StartCoroutine(EnforceCalibration());
+        }
+    }
+    void StartExperiment()
+    {
+        // Register the time when the experiment session starts
+        ExperimentSettings.experimentSessionStartTime = DateTime.Now.ToString();
+        DataDumper.DumpSessionDataExpStart();//Only dump settings if we know that at least the first trial is going to start
+        Debug.Log("Experiment Session Started");
+        SceneManager.LoadScene("Experiment1_Ethical_Demo");
     }
     // Function to dump the session data into FS and later on DB
     public void quitGame()
