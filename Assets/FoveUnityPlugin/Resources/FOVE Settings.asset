@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   showHelp: 1
   showAutomatically: 1
-  forceCalibration: 1
+  forceCalibration: 0
   customDesktopView: 0
   worldScale: 1
   renderScale: 1

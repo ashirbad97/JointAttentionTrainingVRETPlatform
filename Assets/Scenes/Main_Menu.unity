@@ -166,6 +166,7 @@ MonoBehaviour:
   is_conditionedCueSequence: {fileID: 1252013782}
   is_keepFingerPointing: {fileID: 667603421}
   experimentSessionDirName: 
+  enforceCalibration: 1
 --- !u!222 &68050533
 CanvasRenderer:
   m_ObjectHideFlags: 0
