@@ -19,7 +19,7 @@ public class DataDumper
                 Debug.Log("Directory not found will create one. For Dump Session Settings Data");
                 Directory.CreateDirectory(ExperimentSettings.masterDirName + ExperimentSettings.experimentSessionParentDirName);
             }
-            if (Directory.Exists(ExperimentSettings.masterDirName + ExperimentSettings.experimentSessionParentDirName))
+            else if (Directory.Exists(ExperimentSettings.masterDirName + ExperimentSettings.experimentSessionParentDirName))
             {
                 Debug.Log("Directory found. For Dump Session Settings Data");
                 ExperimentSettings.experimentSessionSettingsFileName = ExperimentSettings.masterDirName + ExperimentSettings.experimentSessionParentDirName + "/" + "SessionData" + ".txt";
