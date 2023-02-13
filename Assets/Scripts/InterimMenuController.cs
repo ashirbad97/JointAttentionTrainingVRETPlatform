@@ -11,6 +11,8 @@ public class InterimMenuController : MonoBehaviour
 {
     [SerializeField] GameObject prevTrialNo, currentTrialNo, trialOutputDisplay, trialFeedback, remainingTrials, nextButton, quitButton, saveAndQuitButton, trialLabelArea;
     bool isEndScene;
+    DateTime sessionEndTime;
+    TimeSpan sessionTotalDuration;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,10 +33,14 @@ public class InterimMenuController : MonoBehaviour
             remainingTrials.GetComponent<TMP_Text>().text = (ExperimentSettings.trialCount - ExperimentSettings.currentTrialCount).ToString();
         }
     }
+    // N.B: Function is invoked at the start screen
     void EndScene()
-    {
-        Debug.Log("This is the end Scene");
-        ExperimentSettings.experimentSessionEndTime = DateTime.Now.ToString();
+    {     // Start recording and saving of session end time and session duration
+        sessionEndTime = DateTime.Now;
+        ExperimentSettings.experimentSessionEndTime = sessionEndTime.ToString();
+        sessionTotalDuration = sessionEndTime.Subtract(DateTime.Parse(ExperimentSettings.experimentSessionStartTime));
+        ExperimentSettings.experimentSessionTotalDuration = sessionTotalDuration.ToString();
+        // End recording and saving of session end time and session duration
         DataDumper.DumpSessionDataExpEnd();//Some Setting level configuration are computed at the end so will append at the end
         // Disable Next and Quit
         nextButton.SetActive(false);
@@ -42,6 +48,7 @@ public class InterimMenuController : MonoBehaviour
         saveAndQuitButton.SetActive(true);
         trialLabelArea.SetActive(false);
     }
+    // N.B: Function is only invoked after the user clicks it
     public void IncrementTrial()
     {
         ExperimentSettings.prevTrialData.trial_feedback = trialFeedback.GetComponent<TMP_Text>().text;

@@ -7,29 +7,29 @@ public class AnimationNotifier : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void LeftFingerStayEnded()
     {
-        Debug.Log("left finger stay");
+        DataDumper.DumpHandCueEndTime("LeftFingerStay");
     }
     public void RightFingerStayEnded()
     {
-        Debug.Log("right finger stay");
+        DataDumper.DumpHandCueEndTime("RightFingerStay");
     }
     public void LeftFingerEnded()
     {
-        Debug.Log("right finger");
+        DataDumper.DumpHandCueEndTime("LeftFinger");
     }
     public void RightFingerEnded()
     {
-        Debug.Log("right finger ");
+        DataDumper.DumpHandCueEndTime("RightFinger");
     }
 }

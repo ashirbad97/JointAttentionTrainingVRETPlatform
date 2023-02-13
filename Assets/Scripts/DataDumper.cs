@@ -66,7 +66,7 @@ public class DataDumper
             }
             if (Directory.Exists(ExperimentSettings.masterDirName + ExperimentSettings.experimentSessionParentDirName))
             {
-                File.AppendAllText(ExperimentSettings.experimentSessionSettingsFileName, "\n Experiment Session Settings Details Ending: \n");
+                File.AppendAllText(ExperimentSettings.experimentSessionSettingsFileName, "\n Experiment Session Settings Details Ending: ");
                 File.AppendAllText(ExperimentSettings.experimentSessionSettingsFileName, "\n Last Conducted Session No: " + ExperimentSettings.currentTrialCount);
                 File.AppendAllText(ExperimentSettings.experimentSessionSettingsFileName, "\n Experiment Session End Time: " + ExperimentSettings.experimentSessionEndTime);
                 File.AppendAllText(ExperimentSettings.experimentSessionSettingsFileName, "\n Experiment Session Total Duration: " + ExperimentSettings.experimentSessionTotalDuration);
@@ -102,6 +102,14 @@ public class DataDumper
             Debug.Log("Caught exception during dumping of experiment session settings data at the end");
             Debug.LogException(e);
         }
+
+    }
+    // Function to dump hand delivery cue end time
+    public static void DumpHandCueEndTime(string handCue)
+    {
+        string handCueDumpFileName = Path.Combine(ExperimentSettings.masterDirName, ExperimentSettings.experimentSessionParentDirName + "/handCueEndTime.txt");
+        string handCueEndTime = DateTime.Now.ToString();
+        File.AppendAllText(handCueDumpFileName, ("Hand Cue: " + handCue + " completed at: " + handCueEndTime + "\n"));
 
     }
 }

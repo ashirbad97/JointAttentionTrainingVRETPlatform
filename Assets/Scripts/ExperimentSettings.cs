@@ -12,7 +12,7 @@ public class ExperimentSettings
     public static string avatar;
     public static string experimentMetaData;
     public static int currentTrialCount = 1;
-    public static float experimentSessionTotalDuration;
+    public static string experimentSessionTotalDuration;
     public static string experimentSessionStartTime;
     public static string experimentSessionEndTime;
     public static string masterDirName = "D:/JAExpTrialOutput/";

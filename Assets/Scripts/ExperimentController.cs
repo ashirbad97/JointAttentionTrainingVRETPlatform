@@ -38,7 +38,6 @@ public class ExperimentController : MonoBehaviour
     GameObject[] endTargets;
     GameObject[] targetObjects;
     TrialValue trialData = new TrialValue();
-    // Start is called before the first frame update
     void Start()
     {
         // Set trial settings from the session settings
@@ -106,6 +105,7 @@ public class ExperimentController : MonoBehaviour
         // Debug.Log("Gaze Depth: " + FoveManager.GetCombinedGazeDepth().value);
         // Debug.Log("Eye Position: " + fove.GetCombinedGazeRay().value.GetPoint(FoveManager.GetCombinedGazeDepth().value));
         //Recording the user's eyeContact response
+        // *********************************N.B: Condition to check if continously maintaining eye contact with the avatar head region*******************************************
         if (waitForEyeContact == true)//waits for the eyeContact flag to turn on
         {
             if (GazeCursor.currentGazedObject != null)//check that the user has started gazing, and that the user is wearing the headset and actually gazing
@@ -114,8 +114,12 @@ public class ExperimentController : MonoBehaviour
                 {
                     avatarFaceGazeCountdownTimer -= Time.deltaTime;//reduce the timer if fixation is on the avatar's face region
                 }
+                // ***************N.B: Condition when user has successfully gazed at the avatar continuously*********************************
                 else if (avatarFaceGazeCountdownTimer <= 0)//check if countdown has been set to zero then the faceFixation has been done for the required duration
                 {
+                    DateTime eyeContactEstablishedTime = DateTime.Now;
+                    trialData.trial_eyeContactEstablishedTime = eyeContactEstablishedTime.ToString();
+                    trialData.trial_totalDurationToEstablishEyeContactSinceTrialStart = eyeContactEstablishedTime.Subtract(trialStartTime).ToString();
                     waitForEyeContact = false;//turn off eye contact response flag
                     //After Eye Contact has been established will start the Coroutine
                     //Coroutine to move the headTarget so as to move the avatar head and the Arm Animation
@@ -145,7 +149,6 @@ public class ExperimentController : MonoBehaviour
                 }
                 else if (targetObjRegisterCountdownTimer <= 0)//If counter is in negative then the user has focused on a particular object for the required duration continously and we accept the gaze object as the final user response
                 {
-                    // N.B: HELP REQUIRED !!!
                     Debug.Log("User Response is: " + currentGazedObject);
                     waitForResponse = false;//turn off wait for response flag
                     // Adding the registered object into the trial data
@@ -155,13 +158,17 @@ public class ExperimentController : MonoBehaviour
                         trialData.trial_isGazedObjCorrect = true;
                     else
                         trialData.trial_isGazedObjCorrect = false;
-                    // N.B: Add conditon to check if user gazed correct target is incorrect
+                    // N.B: *******************Condition if the cueHierachy is ON and the user gazesAt the incorrect object******************************
                     if (isCueHierarchy && !trialData.trial_isGazedObjCorrect)
                     {
                         targetObjRegisterCountdownTimer = subjectResponseWaitTime;
                         isCueHierarchy = false;
+                        trialData.trial_isAdditionalCue = true;
+                        trialData.trial_wrongObjAftInitialCue = currentGazedObject.ToString();//verify that it will be the same frame and not change
+                        trialData.trial_wrongObjAftrInitialCue_registrationTime = DateTime.Now.ToString();
                         HandMovement();
                     }
+                    // N.B: *******************Condition if the cueHierachy is OFF and records the registered object******************************
                     else
                     {
                         // Fetches the system time, check if this is in current time format or it varies according to the system time format
@@ -192,11 +199,7 @@ public class ExperimentController : MonoBehaviour
             }
         }
     }
-    //Function to call the ball/head movement coroutine
-    void HeadMovement()
-    {
-        StartCoroutine(MoveTargetBall(endPointDirection));
-    }
+
     //Triggers the events to call the Hand Movement Animation
     void HandMovement()
     {
@@ -229,8 +232,14 @@ public class ExperimentController : MonoBehaviour
         }
         //waitForResponse = true;
     }
+    //Function to call the ball/head movement coroutine
+    void HeadMovement()
+    {
+        StartCoroutine(MoveTargetBall(endPointDirection));
+    }
     IEnumerator MoveTargetBall(string endPointDirection)
     {
+        trialData.trial_headCueDeliveryStart = DateTime.Now.ToString();
         Debug.Log("Head Movement Direction is: " + endPointDirection);
         // End Temporary Fix for Direction Nomenclature Error
         //Since updates type functions are called each frame, the transform position change per frame, since we are doing it using a Coroutine and based on time rather than frames we manually update the position based on a loop. 
@@ -243,7 +252,8 @@ public class ExperimentController : MonoBehaviour
         }
         //Bringing manually to the end position coz with Lerp u never reach the end position
         headTarget.transform.position = targetHeadEndPoint.transform.position;
-
+        trialData.trial_headCueDeliveryEnd = DateTime.Now.ToString();
+        // N.B: **************************Check if cueHierarcy is on to deliver the additional hand cue or simply wait to record the user response********************************
         if (!isCueHierarchy)
         {
             HandMovement();

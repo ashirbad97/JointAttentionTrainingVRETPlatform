@@ -21,5 +21,11 @@ public class TrialValue
     public bool trial_isCustomTrial;
     public string trial_trialFileName;
     public string trial_feedback;
-
+    public bool trial_isAdditionalCue;
+    public string trial_wrongObjAftInitialCue;
+    public string trial_wrongObjAftrInitialCue_registrationTime;
+    public string trial_headCueDeliveryStart;
+    public string trial_headCueDeliveryEnd;
+    public string trial_eyeContactEstablishedTime;
+    public string trial_totalDurationToEstablishEyeContactSinceTrialStart;
 }
