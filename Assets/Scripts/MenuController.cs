@@ -107,8 +107,9 @@ public class MenuController : MonoBehaviour
     {
         Debug.Log("Enforcing Calibration Start");
         FoveManager.StartEyeTrackingCalibration(); //Start the calibration screen
+        yield return FoveManager.WaitForEyeTrackingCalibrationStart;// Pause the coroutine until the calibration of the user has started
         yield return FoveManager.WaitForEyeTrackingCalibrationEnd;// Pause the coroutine until the calibration of the user has ended
-        if (FoveManager.IsEyeTrackingReady().value)//If calibrated after eye tracking enforced load the experiment
+        if (FoveManager.IsEyeTrackingCalibrated().value)//If calibrated after eye tracking enforced load the experiment
         {
             Debug.Log("Calibration Successful");
             StartExperiment();
