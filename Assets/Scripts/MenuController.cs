@@ -24,6 +24,7 @@ public class MenuController : MonoBehaviour
     {
         try
         {
+            // Registration of FOVE capabilities
             FoveManager.RegisterCapabilities(Fove.ClientCapabilities.EyeTracking);
             FoveManager.RegisterCapabilities(Fove.ClientCapabilities.UserPresence);
             //Fetching the experiment settings and convert into int
@@ -84,6 +85,8 @@ public class MenuController : MonoBehaviour
         // Check for Calibration Option
         if (enforceCalibration)
         {
+            /**
+            @dev: For now checking if user is already calibrated being disabled, enforce later if found useful
             // N.B: If user is already calibrated no need to enforce it and start experiment , validate this condition properly
             if (FoveManager.IsEyeTrackingReady().value)
             {
@@ -91,7 +94,8 @@ public class MenuController : MonoBehaviour
                 StartExperiment();
             }
             else // If not enforce calibration
-                StartCoroutine(EnforceCalibration());
+            */
+            StartCoroutine(EnforceCalibration());
         }
         else
         {
